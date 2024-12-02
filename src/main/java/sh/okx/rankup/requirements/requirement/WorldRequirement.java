@@ -31,4 +31,17 @@ public class WorldRequirement extends Requirement {
   public Requirement clone() {
     return new WorldRequirement(this);
   }
+
+  @Override
+  public String buildRemainingString(Player player) {
+    var remaining = getRemaining(player);
+    String[] worlds = getValuesString();
+    String worldsString = String.join(", ", worlds);
+
+    if (remaining == 0) {
+      return "<st><dark_gray>Estar en el mundo " + worldsString + ":</dark_gray></st> <#80ff00>¡Completado!</#80ff00>";
+    } else {
+      return "<#adadad>Estar en el mundo " + worldsString + ":</#adadad> <#ff4444>Aún no estás en este mundo</#ff4444>";
+    }
+  }
 }

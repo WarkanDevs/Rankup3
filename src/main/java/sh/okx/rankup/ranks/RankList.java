@@ -1,7 +1,14 @@
 package sh.okx.rankup.ranks;
 
 import lombok.Getter;
+import net.luckperms.api.LuckPerms;
+import net.luckperms.api.model.group.Group;
+import net.luckperms.api.model.user.User;
+import net.luckperms.api.node.NodeType;
+import net.luckperms.api.node.types.InheritanceNode;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import sh.okx.rankup.RankupPlugin;
 
 import java.util.*;
@@ -102,26 +109,84 @@ public abstract class RankList<T extends Rank> {
     return null;
   }
 
-
   public RankElement<T> getByPlayer(Player player) {
     List<RankElement<T>> list = tree.asList();
     Collections.reverse(list);
-    for (RankElement<T> t : list) {
-      if (t.getRank().isIn(player)) {
-        return t;
+
+    // Warkan Feat: Usar LuckPerms
+    RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
+    if (provider != null) {
+      return resolveHighestRankUsingLuckPerms(provider.getProvider(), player, list);
+    } else {
+      // En caso de que LuckPerms no esté instalado - Lógica original
+      for (RankElement<T> t : list) {
+        if (t.getRank().isIn(player)) {
+          return t;
+        }
       }
     }
+
     return null;
   }
 
   public T getRankByPlayer(Player player) {
     List<RankElement<T>> list = tree.asList();
     Collections.reverse(list);
-    for (RankElement<T> t : list) {
-      if (t.getRank().isIn(player)) {
-        return t.getRank();
+
+    // Warkan Feat: Usar LuckPerms
+    RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
+    if (provider != null) {
+      return resolveHighestRankUsingLuckPerms(provider.getProvider(), player, list).getRank();
+    } else {
+      // Lógica original
+      for (RankElement<T> t : list) {
+        if (t.getRank().isIn(player)) {
+          return t.getRank();
+        }
+      }
+      return null;
+    }
+  }
+
+  public RankElement<T> resolveHighestRankUsingLuckPerms(LuckPerms luckPerms, Player player, List<RankElement<T>> rankList) {
+    // Determinar el grupo mas grande
+    User user = luckPerms.getUserManager().getUser(player.getUniqueId());
+
+    List<RankElement<T>> matchedRanks = new ArrayList<>();
+    for (RankElement<T> t : rankList) {
+      String rankName = t.getRank().getRank();
+      if (user != null && user.getPrimaryGroup().equalsIgnoreCase(rankName)) {
+        matchedRanks.add(t);
+      } else if(user != null) {
+        boolean isInGroup = user.getNodes(NodeType.INHERITANCE).stream()
+                .map(InheritanceNode::getGroupName)
+                .anyMatch(rankName::equalsIgnoreCase);
+        if (isInGroup) {
+          matchedRanks.add(t);
+        }
       }
     }
-    return null;
+
+    // De los rangos que han hecho match obtener el rango mas alto (weight mas alto)
+    RankElement<T> highestRank = null;
+    Group highestGroup = null;
+    for (RankElement<T> t : matchedRanks) {
+      Group group = luckPerms.getGroupManager().getGroup(t.getRank().getRank());
+      if (group != null) {
+        if (group.getWeight().isPresent()) {
+          if (highestGroup == null || group.getWeight().getAsInt() > highestGroup.getWeight().getAsInt()) {
+            highestGroup = group;
+            highestRank = t;
+          }
+        }
+      }
+    }
+
+    if (highestRank == null) {
+      // Devolver default
+      return rankList.stream().filter(rank -> rank.getRank().getRank().equalsIgnoreCase("default")).findFirst().orElse(null);
+    }
+
+    return highestRank;
   }
 }

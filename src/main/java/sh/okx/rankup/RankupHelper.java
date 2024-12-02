@@ -3,6 +3,13 @@ package sh.okx.rankup;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -177,11 +184,42 @@ public class RankupHelper {
       return false;
     } else if (!rank.hasRequirements(player)) { // check if they can afford it
       if (message) {
-        plugin.getMessage(rank, Message.REQUIREMENTS_NOT_MET)
-            .replacePlayer(player)
-            .replaceOldRank(rank)
-            .replaceRank(rankElement.getNext().getRank())
-            .send(player);
+        // Warkan Feat: Mensajes dinámicos...
+        boolean useDynamicMessages = true;
+
+        if (!useDynamicMessages) {
+          plugin.getMessage(rank, Message.REQUIREMENTS_NOT_MET)
+                  .replacePlayer(player)
+                  .replaceOldRank(rank)
+                  .replaceRank(rankElement.getNext().getRank())
+                  .send(player);
+        } else {
+          System.out.println(rankElement.getRank().getRank());
+          System.out.println(rankElement.getRank().getEffectiveDisplayName());
+
+          var text = new StringBuilder();
+          text.append("<br><dark_gray><st><b>-----------------------------------------</b></st></dark_gray><br>");
+          text.append("              <gradient:#FBD708:#FFB000>Warkan Network</gradient> <dark_gray>|</dark_gray> <white>Rangos+</white><br>");
+          text.append("<br>");
+          text.append("    <#d8d8d8>Para subir al rango <yellow><next_rank></yellow> te faltan los siguientes</#d8d8d8><br>");
+          text.append("    <#d8d8d8>requisitos:</#d8d8d8><br><br>");
+
+          rank.getRequirements().getRequirements(player).forEach(requirement -> {
+            text.append("    <white>\uE9E1</white> ");
+            text.append(requirement.buildRemainingString(player));
+            text.append("<br>");
+          });
+
+
+          text.append("<dark_gray><st><b>-----------------------------------------</b></st></dark_gray><br>");
+
+          player.sendMessage(
+              MiniMessage.miniMessage().deserialize(
+                  text.toString(),
+                  Placeholder.unparsed("next_rank", rankElement.getNext().getRank().getEffectiveDisplayName())
+              )
+          );
+        }
       }
       return false;
     } else if (message && checkCooldown(player, rank)) {

@@ -1,9 +1,9 @@
 plugins {
     id 'java'
-    id 'com.github.johnrengelman.shadow' version '6.1.0'
-    id "io.freefair.lombok" version "6.0.0-m2"
+    id("com.gradleup.shadow") version "9.0.0-beta2"
+    id "io.freefair.lombok" version "8.11"
     id "maven-publish"
-    id 'info.solidsoft.pitest' version '1.7.0'
+    id 'info.solidsoft.pitest' version '1.15.0'
 }
 
 pitest {
@@ -17,8 +17,8 @@ group 'sh.okx'
 version '3.14.4'
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
 
 repositories {
@@ -38,6 +38,9 @@ repositories {
     maven {
         url 'https://nexus.neetgames.com/repository/maven-releases/'
     }
+    maven {
+        url = uri("https://repo.papermc.io/repository/maven-public/")
+    }
 }
 
 dependencies {
@@ -49,7 +52,8 @@ dependencies {
     implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30'
 
     compileOnly 'org.jetbrains:annotations:22.0.0'
-    compileOnly 'org.spigotmc:spigot-api:1.20.1-R0.1-SNAPSHOT'
+    compileOnly("io.papermc.paper:paper-api:1.21.3-R0.1-SNAPSHOT")
+    //compileOnly 'org.spigotmc:spigot-api:1.20.1-R0.1-SNAPSHOT'
     compileOnly('com.github.Realizedd:TokenManager:3.2.4') {
         transitive = false
     }
@@ -57,7 +61,7 @@ dependencies {
     compileOnly('com.github.MilkBowl:VaultAPI:1.7') {
         exclude group: 'org.bukkit'
     }
-    compileOnly ('me.clip:placeholderapi:2.10.9') {
+    compileOnly ('me.clip:placeholderapi:2.11.6') {
         exclude group: 'org.bstats'
     }
     compileOnly 'com.github.pyvesb:advanced-achievements:8.0.2'
@@ -78,6 +82,9 @@ dependencies {
         exclude group: 'org.slf4j'
     }
     implementation 'com.electronwill.night-config:toml:3.6.4'
+
+    // Warkan Feat: Usar Luckperms
+    compileOnly 'net.luckperms:api:5.4'
 }
 
 artifacts {
@@ -130,3 +137,6 @@ publishing {
     }
 }
 
+java {
+    toolchain.languageVersion.set(JavaLanguageVersion.of(21))
+}

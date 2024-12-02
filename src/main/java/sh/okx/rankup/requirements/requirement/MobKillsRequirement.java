@@ -38,4 +38,26 @@ public class MobKillsRequirement extends ProgressiveRequirement {
   public Requirement clone() {
     return new MobKillsRequirement(this);
   }
+
+  @Override
+  public String buildRemainingString(Player player) {
+    EntityType entity = EntityType.fromName(getSub());
+    if (entity == null) {
+      EntityType entityFromId;
+      try {
+        entityFromId = EntityType.valueOf(getSub().toUpperCase());
+      } catch (IllegalArgumentException e) {
+        entityFromId = null;
+      }
+      entity = Objects.requireNonNull(entityFromId, "Invalid entity type '" + getSub() + "' in mob-kills requirement.");
+    }
+
+    var remaining = getRemaining(player);
+
+    if (remaining == 0) {
+      return "<st><dark_gray>Asesinar x" + ((int) getTotal(player)) + " <lang:" + entity.translationKey() + ">:</dark_gray></st> <#80ff00>¡Completado!</#80ff00>";
+    } else {
+      return "<#adadad>Asesinar <#ffb000>x" + ((int) getTotal(player)) + "</#ffb000> <#ffec00><lang:" + entity.translationKey() + "></#ffec00>:</#adadad> <#ff4444>" + ((int) remaining) +" restantes</#ff4444>";
+    }
+  }
 }

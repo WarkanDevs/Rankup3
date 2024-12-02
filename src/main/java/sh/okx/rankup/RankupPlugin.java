@@ -367,7 +367,10 @@ public class RankupPlugin extends JavaPlugin {
         new ItemDeductibleRequirement(this, "item"),
         new UseItemRequirement(this),
         new TotalMobKillsRequirement(this),
-        new CraftItemRequirement(this));
+        new CraftItemRequirement(this),
+        new BreedAnimalsRequirement(this),
+        new FishCaughtRequirement(this)
+    );
     if (economy != null) {
       requirements.addRequirements(
           new MoneyRequirement(this, "moneyh"),

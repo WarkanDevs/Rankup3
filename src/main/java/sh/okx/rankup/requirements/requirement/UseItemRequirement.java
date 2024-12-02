@@ -29,4 +29,21 @@ public class UseItemRequirement extends ProgressiveRequirement {
   public Requirement clone() {
     return new UseItemRequirement(this);
   }
+
+  @Override
+  public String buildRemainingString(Player player) {
+    Material material = Material.matchMaterial(getSub());
+
+    if (material == null) {
+      throw new IllegalArgumentException("'" + getSub() + "' is not a valid item");
+    }
+
+    var remaining = getRemaining(player);
+
+    if (remaining == 0) {
+      return "<st><dark_gray>Usar x" + ((int) getTotal(player)) + " <lang:" + material.translationKey() + ">:</dark_gray></st> <#80ff00>¡Completado!</#80ff00>";
+    } else {
+      return "<#adadad>Usar <#ffb000>x" + ((int) getTotal(player)) + "</#ffb000> <#ffec00><lang:" + material.translationKey() + "></#ffec00>:</#adadad> <#ff4444>" + ((int) remaining) +" restantes</#ff4444>";
+    }
+  }
 }

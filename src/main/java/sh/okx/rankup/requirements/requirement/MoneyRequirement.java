@@ -23,4 +23,15 @@ public class MoneyRequirement extends ProgressiveRequirement {
   public Requirement clone() {
     return new MoneyRequirement(this);
   }
+
+  @Override
+  public String buildRemainingString(Player player) {
+    var remaining = getRemaining(player);
+
+    if (remaining == 0) {
+      return "<st><dark_gray>$" + ((int) getTotal(player)) + " de Dinero:</dark_gray></st> <#80ff00>¡Completado!</#80ff00>";
+    } else {
+      return "<#adadad><#ffb000>$" + ((int) getTotal(player)) + "</#ffb000> de <#ffec00>Dinero</#ffec00>:</#adadad> <#ff4444>$" + ((int) remaining) +" restantes</#ff4444>";
+    }
+  }
 }

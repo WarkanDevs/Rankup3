@@ -81,4 +81,23 @@ public class ItemRequirement extends ProgressiveRequirement {
 
     return material == item.getType();
   }
+
+  @Override
+  public String buildRemainingString(Player player) {
+    String sub = getSub();
+    String[] parts = sub.split(":");
+    Material material = Material.matchMaterial(parts[0]);
+
+    if (material == null) {
+      throw new IllegalArgumentException("[item requirement] could not find material name: " + parts[0]);
+    }
+
+    var remaining = getRemaining(player);
+
+    if (remaining == 0) {
+      return "<st><dark_gray>x" + ((int) getTotal(player)) + " <lang:" + material.translationKey() + ">:</dark_gray></st> <#80ff00>¡Completado!</#80ff00>";
+    } else {
+      return "<#adadad><#ffb000>x" + ((int) getTotal(player)) + "</#ffb000> <#ffec00><lang:" + material.translationKey() + "></#ffec00>:</#adadad> <#ff4444>" + ((int) remaining) +" restantes</#ff4444>";
+    }
+  }
 }

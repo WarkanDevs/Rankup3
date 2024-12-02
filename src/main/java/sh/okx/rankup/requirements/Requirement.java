@@ -101,4 +101,8 @@ public abstract class Requirement implements Cloneable {
   public double getTotal(Player player) {
     return 1;
   }
+
+  public String buildRemainingString(Player player) {
+      return getName() + " faltan " + getRemaining(player) + " de " + getTotal(player);
+  }
 }

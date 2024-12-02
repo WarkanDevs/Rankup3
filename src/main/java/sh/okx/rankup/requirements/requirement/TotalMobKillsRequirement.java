@@ -24,4 +24,15 @@ public class TotalMobKillsRequirement extends ProgressiveRequirement {
   public Requirement clone() {
     return new TotalMobKillsRequirement(this);
   }
+
+  @Override
+  public String buildRemainingString(Player player) {
+    var remaining = getRemaining(player);
+
+    if (remaining == 0) {
+      return "<st><dark_gray>Asesinar x" + ((int) getTotal(player)) + " Entidades:</dark_gray></st> <#80ff00>¡Completado!</#80ff00>";
+    } else {
+      return "<#adadad>Asesinar <#ffb000>x" + ((int) getTotal(player)) + "</#ffb000> <#ffec00>Entidades</#ffec00>:</#adadad> <#ff4444>" + ((int) remaining) +" restantes</#ff4444>";
+    }
+  }
 }

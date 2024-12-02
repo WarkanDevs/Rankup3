@@ -91,4 +91,17 @@ public class PlaceholderRequirement extends ProgressiveRequirement {
   public Requirement clone() {
     return new PlaceholderRequirement(this);
   }
+
+  @Override
+  public String buildRemainingString(Player player) {
+    String[] parts = getValueString().split(" ");
+    String placeholder = parts[0];
+    var remaining = getRemaining(player);
+
+    if (remaining == 0) {
+      return "<st><dark_gray>" + placeholder + ":</dark_gray></st> <#80ff00>¡Completado!</#80ff00>";
+    } else {
+      return "<#adadad>" + placeholder + ":</#adadad> <#ff4444>" + remaining +" restante</#ff4444>";
+    }
+  }
 }

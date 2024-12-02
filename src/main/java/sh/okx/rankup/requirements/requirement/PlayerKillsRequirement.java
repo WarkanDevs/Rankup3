@@ -1,5 +1,6 @@
 package sh.okx.rankup.requirements.requirement;
 
+import org.bukkit.Material;
 import org.bukkit.Statistic;
 import org.bukkit.entity.Player;
 import sh.okx.rankup.RankupPlugin;
@@ -23,5 +24,16 @@ public class PlayerKillsRequirement extends ProgressiveRequirement {
   @Override
   public Requirement clone() {
     return new PlayerKillsRequirement(this);
+  }
+
+  @Override
+  public String buildRemainingString(Player player) {
+    var remaining = getRemaining(player);
+
+    if (remaining == 0) {
+      return "<st><dark_gray>Asesinar " + ((int) getTotal(player)) + " jugadores:</dark_gray></st> <#80ff00>¡Completado!</#80ff00>";
+    } else {
+      return "<#adadad>Asesinar <#ffb000>" + ((int) getTotal(player)) + "</#ffb000> <#ffec00>Jugadores</#ffec00>:</#adadad> <#ff4444>" + ((int) remaining) +" restantes</#ff4444>";
+    }
   }
 }

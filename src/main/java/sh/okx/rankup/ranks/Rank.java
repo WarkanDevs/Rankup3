@@ -52,6 +52,14 @@ public class Rank {
     }
   }
 
+  public String getEffectiveDisplayName() {
+    if (displayName == null) {
+      return rank;
+    }
+
+    return displayName;
+  }
+
   @Override
   public String toString() {
     return "Rank{" +
