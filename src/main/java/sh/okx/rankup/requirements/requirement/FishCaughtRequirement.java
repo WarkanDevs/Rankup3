@@ -8,7 +8,7 @@ import sh.okx.rankup.requirements.Requirement;
 
 public class FishCaughtRequirement extends ProgressiveRequirement {
   public FishCaughtRequirement(RankupPlugin plugin) {
-    super(plugin, "fish-caught", true);
+    super(plugin, "fish-caught");
   }
 
   protected FishCaughtRequirement(FishCaughtRequirement clone) {
@@ -30,9 +30,9 @@ public class FishCaughtRequirement extends ProgressiveRequirement {
     var remaining = getRemaining(player);
 
     if (remaining == 0) {
-      return "<st><dark_gray>Pescar x" + ((int) getTotal(player)) + " Veces:</dark_gray></st> <#80ff00>¡Completado!</#80ff00>";
+      return "<st><dark_gray>Pescar x" + getTotalDisplay(player) + " Veces:</dark_gray></st> <#80ff00>¡Completado!</#80ff00>";
     } else {
-      return "<#adadad>Pescar <#ffb000>x" + ((int) getTotal(player)) + "</#ffb000> <#ffec00>Veces</#ffec00>:</#adadad> <#ff4444>" + ((int) remaining) +" restantes</#ff4444>";
+      return "<#adadad>Pescar <#ffb000>x" + getTotalDisplay(player) + "</#ffb000> <#ffec00>Veces</#ffec00>:</#adadad> <#ff4444>" + ((int) remaining) +" restantes</#ff4444>";
     }
   }
 }

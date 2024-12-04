@@ -15,6 +15,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
+import sh.okx.rankup.blockmanager.BlockManager;
 import sh.okx.rankup.commands.*;
 import sh.okx.rankup.economy.Economy;
 import sh.okx.rankup.economy.EconomyProvider;
@@ -92,6 +93,8 @@ public class RankupPlugin extends JavaPlugin {
   private String errorMessage;
   private PermissionManager permissionManager = new VaultPermissionManager(this);
   private EconomyProvider economyProvider = new VaultEconomyProvider();
+  @Getter
+  private BlockManager blockManager = new BlockManager();
 
   public RankupPlugin() {
     super();
@@ -108,6 +111,8 @@ public class RankupPlugin extends JavaPlugin {
     UpdateNotifier notifier = new UpdateNotifier(new VersionChecker(this));
 
     reload(true);
+    blockManager.start(this);
+    getServer().getPluginManager().registerEvents(blockManager, this);
 
     if (System.getProperty("RANKUP_TEST") == null) {
       Metrics metrics = new Metrics(this);
@@ -162,6 +167,7 @@ public class RankupPlugin extends JavaPlugin {
   @Override
   public void onDisable() {
     closeInventories();
+    blockManager.shutdown();
     if (placeholders != null) {
       placeholders.unregister();
     }

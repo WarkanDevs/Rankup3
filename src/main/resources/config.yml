@@ -126,3 +126,13 @@ shorten:
 - 'Q'
 - 'Qu'
 - 'S'
+
+# The format for placeholders
+# to visualise in /rankup command
+# ----
+# Available placeholders:
+# {{total}}: Total required
+# {{progress}}: Current progress
+# {{remaining}}: Remaining progress
+placeholders-formats:
+  test: "This is a test"

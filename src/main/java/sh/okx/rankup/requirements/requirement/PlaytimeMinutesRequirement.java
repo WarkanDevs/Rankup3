@@ -40,9 +40,9 @@ public class PlaytimeMinutesRequirement extends ProgressiveRequirement {
     var remaining = getRemaining(player);
 
     if (remaining == 0) {
-      return "<st><dark_gray>Jugar " + ((int) getTotal(player)) + " minutos:</dark_gray></st> <#80ff00>¡Completado!</#80ff00>";
+      return "<st><dark_gray>Jugar " + getTotalDisplay(player) + " minutos:</dark_gray></st> <#80ff00>¡Completado!</#80ff00>";
     } else {
-      return "<#adadad>Jugar <#ffb000>" + ((int) getTotal(player)) + "</#ffb000> <#ffec00>Minutos</#ffec00>:</#adadad> <#ff4444>" + ((int) remaining) +" minutos restantes</#ff4444>";
+      return "<#adadad>Jugar <#ffb000>" + getTotalDisplay(player) + "</#ffb000> <#ffec00>Minutos</#ffec00>:</#adadad> <#ff4444>" + ((int) remaining) +" minutos restantes</#ff4444>";
     }
   }
 }

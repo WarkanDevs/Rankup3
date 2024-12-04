@@ -1,5 +1,6 @@
 package sh.okx.rankup;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -22,6 +23,7 @@ import sh.okx.rankup.prestige.Prestiges;
 import sh.okx.rankup.ranks.Rank;
 import sh.okx.rankup.ranks.RankElement;
 import sh.okx.rankup.ranks.Rankups;
+import sh.okx.rankup.requirements.Requirement;
 
 /**
  * Actually performs the ranking up and prestiging for the plugin and also manages the cooldowns
@@ -194,9 +196,6 @@ public class RankupHelper {
                   .replaceRank(rankElement.getNext().getRank())
                   .send(player);
         } else {
-          System.out.println(rankElement.getRank().getRank());
-          System.out.println(rankElement.getRank().getEffectiveDisplayName());
-
           var text = new StringBuilder();
           text.append("<br><dark_gray><st><b>-----------------------------------------</b></st></dark_gray><br>");
           text.append("              <gradient:#FBD708:#FFB000>Warkan Network</gradient> <dark_gray>|</dark_gray> <white>Rangos+</white><br>");
@@ -204,12 +203,27 @@ public class RankupHelper {
           text.append("    <#d8d8d8>Para subir al rango <yellow><next_rank></yellow> te faltan los siguientes</#d8d8d8><br>");
           text.append("    <#d8d8d8>requisitos:</#d8d8d8><br><br>");
 
-          rank.getRequirements().getRequirements(player).forEach(requirement -> {
+          var pending = new ArrayList<Requirement>();
+          var completed = new ArrayList<Requirement>();
+          rank.getRequirements().getRequirements(player).forEach((requirement) -> {
+            if (requirement.getRemaining(player) > 0) {
+              pending.add(requirement);
+            } else {
+              completed.add(requirement);
+            }
+          });
+
+          for (Requirement requirement : pending) {
             text.append("    <white>\uE9E1</white> ");
             text.append(requirement.buildRemainingString(player));
             text.append("<br>");
-          });
+          }
 
+          for (Requirement requirement : completed) {
+            text.append("    <white>\uE9E1</white> ");
+            text.append(requirement.buildRemainingString(player));
+            text.append("<br>");
+          }
 
           text.append("<dark_gray><st><b>-----------------------------------------</b></st></dark_gray><br>");
 

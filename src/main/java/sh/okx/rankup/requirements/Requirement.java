@@ -4,11 +4,14 @@ import lombok.Getter;
 import org.bukkit.entity.Player;
 import sh.okx.rankup.RankupPlugin;
 
+import javax.annotation.Nullable;
+
 public abstract class Requirement implements Cloneable {
   protected final RankupPlugin plugin;
   @Getter
   protected final String name;
   private String value;
+  private String toDisplay;
   @Getter
   private String sub;
   private boolean subRequirement;
@@ -27,6 +30,7 @@ public abstract class Requirement implements Cloneable {
     this.plugin = clone.plugin;
     this.name = clone.name;
     this.value = clone.value;
+    this.toDisplay = clone.toDisplay;
     this.sub = clone.sub;
     this.subRequirement = clone.subRequirement;
   }
@@ -39,30 +43,36 @@ public abstract class Requirement implements Cloneable {
       }
 
       this.sub = parts[0];
-      this.value = parts[1];
+      this.value = parts[1].split("\\|")[0];
+      if (parts[1].split("\\|").length > 1) {
+        this.toDisplay = parts[1].split("\\|")[1];
+      }
     } else {
-      this.value = value;
+      this.value = value.split("\\|")[0];
+      if (value.split("\\|").length > 1) {
+        this.toDisplay = value.split("\\|")[1];
+      }
     }
   }
 
   public String getValueString() {
-    return value;
+    return value.split("\\|")[0];
   }
 
   public String[] getValuesString() {
-    return value.split(" ");
+    return value.split("\\|")[0].split(" ");
   }
 
   public double getValueDouble() {
-    return Double.parseDouble(value);
+    return Double.parseDouble(value.split("\\|")[0]);
   }
 
   public int getValueInt() {
-    return Integer.parseInt(value);
+    return Integer.parseInt(value.split("\\|")[0]);
   }
 
   public boolean getValueBoolean() {
-    return Boolean.parseBoolean(value);
+    return Boolean.parseBoolean(value.split("\\|")[0]);
   }
 
   public String getFullName() {
@@ -71,6 +81,15 @@ public abstract class Requirement implements Cloneable {
     } else {
       return name;
     }
+  }
+
+  @Nullable
+  public String getTotalAmountToDisplay() {
+    if (toDisplay != null) {
+      return toDisplay;
+    }
+
+    return null;
   }
 
   /**
@@ -102,7 +121,16 @@ public abstract class Requirement implements Cloneable {
     return 1;
   }
 
+  public String getTotalDisplay(Player player) {
+    var display = getTotalAmountToDisplay();
+    if (display != null) {
+      return display;
+    } else {
+      return String.valueOf((int) getTotal(player));
+    }
+  }
+
   public String buildRemainingString(Player player) {
-      return getName() + " faltan " + getRemaining(player) + " de " + getTotal(player);
+    return getName() + " faltan " + getRemaining(player) + " de " + getTotalDisplay(player);
   }
 }

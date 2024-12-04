@@ -82,9 +82,6 @@ dependencies {
         exclude group: 'org.slf4j'
     }
     implementation 'com.electronwill.night-config:toml:3.6.4'
-
-    // Warkan Feat: Usar Luckperms
-    compileOnly 'net.luckperms:api:5.4'
 }
 
 artifacts {

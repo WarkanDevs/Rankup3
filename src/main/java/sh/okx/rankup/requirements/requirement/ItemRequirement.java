@@ -95,9 +95,9 @@ public class ItemRequirement extends ProgressiveRequirement {
     var remaining = getRemaining(player);
 
     if (remaining == 0) {
-      return "<st><dark_gray>x" + ((int) getTotal(player)) + " <lang:" + material.translationKey() + ">:</dark_gray></st> <#80ff00>¡Completado!</#80ff00>";
+      return "<st><dark_gray>x" + getTotalDisplay(player) + " <lang:" + material.translationKey() + ">:</dark_gray></st> <#80ff00>¡Completado!</#80ff00>";
     } else {
-      return "<#adadad><#ffb000>x" + ((int) getTotal(player)) + "</#ffb000> <#ffec00><lang:" + material.translationKey() + "></#ffec00>:</#adadad> <#ff4444>" + ((int) remaining) +" restantes</#ff4444>";
+      return "<#adadad><#ffb000>x" + getTotalDisplay(player) + "</#ffb000> <#ffec00><lang:" + material.translationKey() + "></#ffec00>:</#adadad> <#ff4444>" + ((int) remaining) +" restantes</#ff4444>";
     }
   }
 }

@@ -6,6 +6,8 @@ import sh.okx.rankup.RankupPlugin;
 import sh.okx.rankup.requirements.ProgressiveRequirement;
 import sh.okx.rankup.requirements.Requirement;
 
+import java.util.Objects;
+
 public class PlaceholderRequirement extends ProgressiveRequirement {
 
   public static final double DELTA = 0.00001D;
@@ -98,10 +100,30 @@ public class PlaceholderRequirement extends ProgressiveRequirement {
     String placeholder = parts[0];
     var remaining = getRemaining(player);
 
+    var configuration = plugin.getConfig();
+    String customFormat = placeholder;
+    if (configuration.contains("placeholders-formats")) {
+        var formats = configuration.getConfigurationSection("placeholders-formats");
+        if (Objects.requireNonNull(formats).contains(placeholder.replace("%", ""))) {
+          customFormat = Objects.requireNonNull(formats.getString(placeholder.replace("%", "")));
+        }
+    }
+
+    if (customFormat.contains("{{total}}")) {
+      customFormat = customFormat.replace("{{total}}", String.valueOf(getTotalDisplay(player)));
+    }
+    if (customFormat.contains("{{remaining}}")) {
+      customFormat = customFormat.replace("{{remaining}}", String.valueOf((int) remaining));
+    }
+    if (customFormat.contains("{{progress}}")) {
+      customFormat = customFormat.replace("{{progress}}", String.valueOf((int) getProgress(player)));
+    }
+
     if (remaining == 0) {
-      return "<st><dark_gray>" + placeholder + ":</dark_gray></st> <#80ff00>¡Completado!</#80ff00>";
+      var formatWithoutColor = customFormat.replaceAll("<[^>]*>", "");
+      return "<st><dark_gray>" + formatWithoutColor + ":</dark_gray></st> <#80ff00>¡Completado!</#80ff00>";
     } else {
-      return "<#adadad>" + placeholder + ":</#adadad> <#ff4444>" + remaining +" restante</#ff4444>";
+      return "<#adadad>" + customFormat + ":</#adadad> <#ff4444>" + ((int) remaining) +" restantes</#ff4444>";
     }
   }
 }

@@ -29,9 +29,9 @@ public class XpLevelRequirement extends ProgressiveRequirement {
     var remaining = getRemaining(player);
 
     if (remaining == 0) {
-      return "<st><dark_gray>" + ((int) getTotal(player)) + " Niveles de XP:</dark_gray></st> <#80ff00>¡Completado!</#80ff00>";
+      return "<st><dark_gray>" + getTotalDisplay(player) + " Niveles de XP:</dark_gray></st> <#80ff00>¡Completado!</#80ff00>";
     } else {
-      return "<#adadad><#ffb000>" + ((int) getTotal(player)) + "</#ffb000> <#ffec00>Niveles de XP</#ffec00>:</#adadad> <#ff4444>" + ((int) remaining) +" niveles restantes</#ff4444>";
+      return "<#adadad><#ffb000>" + getTotalDisplay(player) + "</#ffb000> <#ffec00>Niveles de XP</#ffec00>:</#adadad> <#ff4444>" + ((int) remaining) +" niveles restantes</#ff4444>";
     }
   }
 }

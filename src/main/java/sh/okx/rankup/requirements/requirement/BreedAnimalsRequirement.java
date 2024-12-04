@@ -8,7 +8,7 @@ import sh.okx.rankup.requirements.Requirement;
 
 public class BreedAnimalsRequirement extends ProgressiveRequirement {
   public BreedAnimalsRequirement(RankupPlugin plugin) {
-    super(plugin, "breed-animals", true);
+    super(plugin, "breed-animals");
   }
 
   protected BreedAnimalsRequirement(BreedAnimalsRequirement clone) {
@@ -30,9 +30,9 @@ public class BreedAnimalsRequirement extends ProgressiveRequirement {
     var remaining = getRemaining(player);
 
     if (remaining == 0) {
-      return "<st><dark_gray>Alimentar x" + ((int) getTotal(player)) + " Animales:</dark_gray></st> <#80ff00>¡Completado!</#80ff00>";
+      return "<st><dark_gray>Reproducir x" + getTotalDisplay(player) + " Animales:</dark_gray></st> <#80ff00>¡Completado!</#80ff00>";
     } else {
-      return "<#adadad>Alimentar <#ffb000>x" + ((int) getTotal(player)) + "</#ffb000> <#ffec00>Animales</#ffec00>:</#adadad> <#ff4444>" + ((int) remaining) +" restantes</#ff4444>";
+      return "<#adadad>Reproducir <#ffb000>x" + getTotalDisplay(player) + "</#ffb000> <#ffec00>Animales</#ffec00>:</#adadad> <#ff4444>" + ((int) remaining) +" restantes</#ff4444>";
     }
   }
 }

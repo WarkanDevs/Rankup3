@@ -31,9 +31,9 @@ public class PlayerKillsRequirement extends ProgressiveRequirement {
     var remaining = getRemaining(player);
 
     if (remaining == 0) {
-      return "<st><dark_gray>Asesinar " + ((int) getTotal(player)) + " jugadores:</dark_gray></st> <#80ff00>¡Completado!</#80ff00>";
+      return "<st><dark_gray>Asesinar " + getTotalDisplay(player) + " jugadores:</dark_gray></st> <#80ff00>¡Completado!</#80ff00>";
     } else {
-      return "<#adadad>Asesinar <#ffb000>" + ((int) getTotal(player)) + "</#ffb000> <#ffec00>Jugadores</#ffec00>:</#adadad> <#ff4444>" + ((int) remaining) +" restantes</#ff4444>";
+      return "<#adadad>Asesinar <#ffb000>" + getTotalDisplay(player) + "</#ffb000> <#ffec00>Jugadores</#ffec00>:</#adadad> <#ff4444>" + ((int) remaining) +" restantes</#ff4444>";
     }
   }
 }

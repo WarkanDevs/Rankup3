@@ -29,9 +29,9 @@ public class MoneyRequirement extends ProgressiveRequirement {
     var remaining = getRemaining(player);
 
     if (remaining == 0) {
-      return "<st><dark_gray>$" + ((int) getTotal(player)) + " de Dinero:</dark_gray></st> <#80ff00>¡Completado!</#80ff00>";
+      return "<st><dark_gray>$" + getTotalDisplay(player) + " de Dinero:</dark_gray></st> <#80ff00>¡Completado!</#80ff00>";
     } else {
-      return "<#adadad><#ffb000>$" + ((int) getTotal(player)) + "</#ffb000> de <#ffec00>Dinero</#ffec00>:</#adadad> <#ff4444>$" + ((int) remaining) +" restantes</#ff4444>";
+      return "<#adadad><#ffb000>$" + getTotalDisplay(player) + "</#ffb000> de <#ffec00>Dinero</#ffec00>:</#adadad> <#ff4444>$" + ((int) remaining) +" restantes</#ff4444>";
     }
   }
 }
