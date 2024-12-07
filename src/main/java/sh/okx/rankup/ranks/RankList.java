@@ -54,11 +54,11 @@ public abstract class RankList<T extends Rank> {
     for (RankElement<T> rankElement : rankElements) {
       T rank1 = rankElement.getRank();
       if (rank1.getRank() != null
-          && rank1.getRank().equalsIgnoreCase(rank.getNext())) {
+              && rank1.getRank().equalsIgnoreCase(rank.getNext())) {
         // current rank element is the next rank
         currentElement.setNext(rankElement);
       } else if (rank1.getNext() != null
-          && rank1.getNext().equalsIgnoreCase(rank.getRank())) {
+              && rank1.getNext().equalsIgnoreCase(rank.getRank())) {
         rankElement.setNext(currentElement);
       }
     }
@@ -118,6 +118,7 @@ public abstract class RankList<T extends Rank> {
     if (provider != null) {
       return resolveHighestRankUsingLuckPerms(provider.getProvider(), player, list);
     } else {
+      plugin.getLogger().warning("[!!!] Usando la lógica original para resolver el rankup del jugador por que no se encontró LuckPerms instalado.");
       // En caso de que LuckPerms no esté instalado - Lógica original
       for (RankElement<T> t : list) {
         if (t.getRank().isIn(player)) {
@@ -150,17 +151,24 @@ public abstract class RankList<T extends Rank> {
 
   public RankElement<T> resolveHighestRankUsingLuckPerms(LuckPerms luckPerms, Player player, List<RankElement<T>> rankList) {
     // Determinar el grupo mas grande
-    User user = luckPerms.getUserManager().getUser(player.getUniqueId());
+    User user = luckPerms.getPlayerAdapter(Player.class).getUser(player);
 
+    plugin.getLogger().warning("[verbose] Tratando de resolver el grupo de nivel para: " + user.getUsername());
     List<RankElement<T>> matchedRanks = new ArrayList<>();
+
     for (RankElement<T> t : rankList) {
+      plugin.getLogger().warning("[verbose] Tratando de validar el rank para: " + t.getRank().getRank());
+
       String rankName = t.getRank().getRank();
-      if (user != null && user.getPrimaryGroup().equalsIgnoreCase(rankName)) {
+      if (user.getPrimaryGroup().equalsIgnoreCase(rankName)) {
+        plugin.getLogger().warning("[verbose] [ok] El grupo principal del jugador es: " + rankName + ", y coincide con un rango del rankup.");
         matchedRanks.add(t);
-      } else if(user != null) {
+      } else {
         boolean isInGroup = user.getNodes(NodeType.INHERITANCE).stream()
                 .map(InheritanceNode::getGroupName)
                 .anyMatch(rankName::equalsIgnoreCase);
+        plugin.getLogger().warning("[verbose] [?] ¿El jugador está en el grupo " + rankName + "? R=" + isInGroup);
+
         if (isInGroup) {
           matchedRanks.add(t);
         }
@@ -170,21 +178,27 @@ public abstract class RankList<T extends Rank> {
     // De los rangos que han hecho match obtener el rango mas alto (weight mas alto)
     RankElement<T> highestRank = null;
     Group highestGroup = null;
+    plugin.getLogger().info("[verbose] [+] Rangos que han hecho match: " + matchedRanks.size());
     for (RankElement<T> t : matchedRanks) {
       Group group = luckPerms.getGroupManager().getGroup(t.getRank().getRank());
       if (group != null) {
-        if (group.getWeight().isPresent()) {
-          if (highestGroup == null || group.getWeight().getAsInt() > highestGroup.getWeight().getAsInt()) {
-            highestGroup = group;
-            highestRank = t;
-          }
+        if (highestGroup == null || group.getWeight().orElse(0) > highestGroup.getWeight().orElse(0)) {
+          highestGroup = group;
+          highestRank = t;
+
+          plugin.getLogger().info("[verbose] [+] Grupo con mayor peso: " + group.getName() + " con peso: " + group.getWeight().orElse(0));
         }
+      } else {
+        plugin.getLogger().warning("[verbose] [!!!] No se encontró el grupo en LuckPerms para el rango: " + t.getRank().getRank());
       }
     }
 
     if (highestRank == null) {
+      plugin.getLogger().warning("[verbose] [!!!] No se encontró el rango más alto para el jugador.");
       // Devolver default
       return rankList.stream().filter(rank -> rank.getRank().getRank().equalsIgnoreCase("default")).findFirst().orElse(null);
+    } else {
+      plugin.getLogger().info("[verbose] [ok] Rango más alto encontrado: " + highestRank.getRank().getRank());
     }
 
     return highestRank;
