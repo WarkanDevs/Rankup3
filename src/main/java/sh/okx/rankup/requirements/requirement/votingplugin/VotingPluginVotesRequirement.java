@@ -25,4 +25,15 @@ public class VotingPluginVotesRequirement extends ProgressiveRequirement {
   public Requirement clone() {
     return new VotingPluginVotesRequirement(this);
   }
+
+  @Override
+  public String buildRemainingString(Player player) {
+    var remaining = getRemaining(player);
+
+    if (remaining == 0) {
+      return "<st><dark_gray>Votar " + getTotalDisplay(player) + " veces</dark_gray></st> <#80ff00>¡Completado!</#80ff00>";
+    } else {
+      return "<#adadad>Votar <#ffb000>" + getTotalDisplay(player) + " veces</#ffb000> <#ffec00>(comando /vote)</#ffec00>:</#adadad> <#ff4444>" + ((int) remaining) +" restantes</#ff4444>";
+    }
+  }
 }
